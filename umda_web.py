@@ -1,7 +1,7 @@
 import streamlit as st
 
 from rdkit import Chem
-from rdkit.Chem import Draw, MolToSmiles, rdMolDescriptors
+from rdkit.Chem import Draw, rdMolDescriptors
 
 from joblib import load
 import numpy as np
@@ -9,7 +9,8 @@ import importlib
 import pandas as pd
 # import streamlit.components.v1 as components
 load_pipeline = importlib.import_module("umda.data").load_pipeline
-st.set_page_config(layout="wide")
+st.set_page_config(page_title="UMDA", page_icon=":rocket:", layout="wide")
+
 
 @st.cache_data
 def get_regressor():
@@ -26,8 +27,12 @@ def main():
     
     st.title("Unsupervised Molecule Discovery in Astrophysics (UMDA)")
     st.write("This is a web interface for the UMDA project created by A.N. Marimuthu.")
-    st.write('Read more on : Lee+, ‘Machine Learning of Interstellar Chemical Inventories’, ApJL, vol. 917, no. 1, p. L6, Aug. 2021, doi: 10.3847/2041-8213/ac194b.')
-
+    st.write('Lee+, ‘Machine Learning of Interstellar Chemical Inventories’, ApJL, vol. 917, no. 1, p. L6, Aug. 2021, doi: 10.3847/2041-8213/ac194b.')
+    
+    paper_link_url = "https://iopscience.iop.org/article/10.3847/2041-8213/ac194b"
+    st.write("Read the paper on : ", paper_link_url)
+    
+    
     st.header('Column density prediction towards TMC-1')
     
     with st.sidebar:
