@@ -6,11 +6,10 @@ from rdkit.Chem import Draw, MolToSmiles, rdMolDescriptors
 from joblib import load
 import numpy as np
 import importlib
-# umda = imp.load_source('umda', './umda/__init__.py')
-load_pipeline = importlib.import_module("umda.data").load_pipeline
-
-
 import pandas as pd
+# import streamlit.components.v1 as components
+load_pipeline = importlib.import_module("umda.data").load_pipeline
+st.set_page_config(layout="wide")
 
 @st.cache_data
 def get_regressor():
@@ -21,18 +20,23 @@ def get_regressor():
     return embedder, regressors, regressor_list
 
 def main():
-    st.title("Unsupervised Molecule Discovery in Astrophysics")
-    st.write("This is a web app for the UMDA project.")
+    # Create a slider widget in the side panel
+    # with st.sidebar:
+    #     slider_val = st.slider('Select a value', 0, 100, 50)
+    
+    st.title("Unsupervised Molecule Discovery in Astrophysics (UMDA)")
+    st.write("This is a web interface for the UMDA project created by A.N. Marimuthu.")
     st.write('Read more on : Lee+, ‘Machine Learning of Interstellar Chemical Inventories’, ApJL, vol. 917, no. 1, p. L6, Aug. 2021, doi: 10.3847/2041-8213/ac194b.')
 
     st.header('Column density prediction towards TMC-1')
     
-    # mol_representation = st.radio("Choose a molecular representation", ("SMILES", "Chemical formula"))
-    mol_representation = "SMILES"
-    molecules_name = st.text_input(f'Enter molecule in "{mol_representation}" format', 'CCC#N, C#CC#[O+], CC1CCCCC1, Cc1ccccc1')
-    if molecules_name == "":
-        st.warning("Please enter SMILES string of a molecule to predict its column density.")
-        return 
+    with st.sidebar:
+        # mol_representation = st.radio("Choose a molecular representation", ("SMILES", "Chemical formula"))
+        mol_representation = "SMILES"
+        molecules_name = st.text_input(f'Enter molecule in "{mol_representation}" format', 'CCC#N, C#CC#[O+], CC1CCCCC1, Cc1ccccc1')
+        if molecules_name == "":
+            st.warning("Please enter SMILES string of a molecule to predict its column density.")
+            return 
     
     molecules_name_lists = [mol.strip() for mol in molecules_name.split(",")]
     formula_lists = []
@@ -58,7 +62,8 @@ def main():
     embedder, regressors, regressor_list = get_regressor()
     vecs = np.vstack([embedder.vectorize(smi) for smi in smiles_lists])
 
-    regressor_model_lists = st.multiselect("Choose a regressor model", regressor_list, default=["gbr", "svr", "rfr"])
+    with st.sidebar:
+        regressor_model_lists = st.multiselect("Choose a regressor model", regressor_list, default=["gbr", "svr", "rfr"])
 
     if regressor_model_lists == []:
         st.warning("Please select at least one model.")
