@@ -5,7 +5,10 @@ from rdkit.Chem import Draw
 
 from joblib import load
 import numpy as np
-from umda.data import load_pipeline
+import importlib
+# umda = imp.load_source('umda', './umda/__init__.py')
+load_pipeline = importlib.import_module("umda.data").load_pipeline
+# from .umda.data import load_pipeline
 
 import pandas as pd
 
