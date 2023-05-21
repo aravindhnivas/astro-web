@@ -1,61 +1,81 @@
 import streamlit as st
 
 from rdkit import Chem
-from rdkit.Chem import Draw
+from rdkit.Chem import Draw, MolToSmiles, rdMolDescriptors
 
 from joblib import load
 import numpy as np
 import importlib
 # umda = imp.load_source('umda', './umda/__init__.py')
 load_pipeline = importlib.import_module("umda.data").load_pipeline
-# from .umda.data import load_pipeline
+
 
 import pandas as pd
 
-st.title("Unsupervised Molecule Discovery in Astrophysics")
-st.write("This is a web app for the UMDA project.")
-st.write('Read more on : Lee+, ‘Machine Learning of Interstellar Chemical Inventories’, ApJL, vol. 917, no. 1, p. L6, Aug. 2021, doi: 10.3847/2041-8213/ac194b.')
+@st.cache_data
+def get_regressor():
+    # load a wrapper class for generating embeddings
+    embedder = load_pipeline()
+    regressors = load("models/regressors.pkl")
+    regressor_list = list(regressors.keys())
+    return embedder, regressors, regressor_list
 
-st.header('TMC-1 abundances prediction')
+def main():
+    st.title("Unsupervised Molecule Discovery in Astrophysics")
+    st.write("This is a web app for the UMDA project.")
+    st.write('Read more on : Lee+, ‘Machine Learning of Interstellar Chemical Inventories’, ApJL, vol. 917, no. 1, p. L6, Aug. 2021, doi: 10.3847/2041-8213/ac194b.')
 
-
-
-# load a wrapper class for generating embeddings
-embedder = load_pipeline()
-regressors = load("models/regressors.pkl")
-regressor_list = list(regressors.keys())
-
-
-
-smiles = st.text_input('Enter SMILES string', 'C1=C=C=C=C=C1, C=O')
-mol_smiles_lists = [mol.strip() for mol in smiles.split(",")]
-# print(smiles.split(","))
-
-chem_images = []
-for mol in mol_smiles_lists:
-    molecule = Chem.MolFromSmiles(mol.strip())
-    img = Draw.MolToImage(molecule)
-    chem_images.append(img)
-
-st.image(chem_images, caption=mol_smiles_lists)
-
-vecs = np.vstack([embedder.vectorize(smi) for smi in mol_smiles_lists])
-
-regressor_model_lists = st.multiselect("Choose a regressor model", regressor_list, default=["gbr", "svr", "rfr"])
-
-predictions = []
-for regressor_model_name in regressor_model_lists:
-    regressor = regressors.get(regressor_model_name)
-    prediction = regressor.predict(vecs)
-    predictions.append(prediction)
+    st.header('Column density prediction towards TMC-1')
     
-# print(predictions)
+    # mol_representation = st.radio("Choose a molecular representation", ("SMILES", "Chemical formula"))
+    mol_representation = "SMILES"
+    molecules_name = st.text_input(f'Enter molecule in "{mol_representation}" format', 'CCC#N, C#CC#[O+], CC1CCCCC1, Cc1ccccc1')
+    if molecules_name == "":
+        st.warning("Please enter SMILES string of a molecule to predict its column density.")
+        return 
+    
+    molecules_name_lists = [mol.strip() for mol in molecules_name.split(",")]
+    formula_lists = []
+    chem_images = []
+    smiles_lists = []
+    
+    for mol in molecules_name_lists:
+        
+        smiles = mol
+        # Generate an RDKit molecule object from the SMILES string
+        mol_obj = Chem.MolFromSmiles(smiles)
+        # Generate a chemical formula from the molecule object
+        formula = rdMolDescriptors.CalcMolFormula(mol_obj)
+        
+        formula_lists.append(formula)
+        smiles_lists.append(smiles)
+        
+        img = Draw.MolToImage(mol_obj)
+        chem_images.append(img)
+        
+    st.image(chem_images, caption=formula_lists)
 
-predictions = np.vstack(predictions).T
-# st.write(predictions)
-# print(predictions)
+    embedder, regressors, regressor_list = get_regressor()
+    vecs = np.vstack([embedder.vectorize(smi) for smi in smiles_lists])
 
-# st.subheader(f"Predicted abundances")
+    regressor_model_lists = st.multiselect("Choose a regressor model", regressor_list, default=["gbr", "svr", "rfr"])
 
-df = pd.DataFrame(predictions, columns=regressor_model_lists, index=mol_smiles_lists)
-st.table(df)
+    if regressor_model_lists == []:
+        st.warning("Please select at least one model.")
+        return
+    
+    predictions = []
+    for regressor_model_name in regressor_model_lists:
+        regressor = regressors.get(regressor_model_name)
+        prediction = regressor.predict(vecs)
+        predictions.append(prediction)
+        
+
+    predictions = np.vstack(predictions).T
+
+    st.subheader("Predicted Column Density (log$_{10}$ cm$^{-2}$) towards TMC-1 using the selected models")
+    df = pd.DataFrame(predictions, columns=regressor_model_lists, index=formula_lists)
+    st.table(df)
+    
+if __name__ == "__main__":
+    main()
