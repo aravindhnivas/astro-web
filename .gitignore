@@ -1,4 +1,2 @@
 *.pkl
-*.csv
-*.yml
 **/__pycache__/
