@@ -13,9 +13,13 @@ def about_page():
     with st.sidebar:
         """
             ## About _astromol_
+            
+
             A Database of Molecules Detected in Space
             
             The main python library is created and mainted by Dr. Brett A. McGuire
+            
+            [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
             
             [Original source code](https://github.com/bmcguir2/astromol)
             
