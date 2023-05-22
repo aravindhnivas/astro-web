@@ -18,11 +18,15 @@ git+https://github.com/laserkelvin/mol2vec.git@850d944d5f48a58e26ed0264332b5741f
 # git+https://github.com/samoturk/mol2vec
 
 # astromol
-bibtexparser
-numpy
-matplotlib
-colour
-scipy
-datetime
-python-pptx
-periodictable
+git+https://github.com/bmcguir2/astromol.git@main
+# bibtexparser
+# numpy
+# matplotlib
+# colour
+# scipy
+# datetime
+# python-pptx
+# periodictable
+
+# 
+plotly
