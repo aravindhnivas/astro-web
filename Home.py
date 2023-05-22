@@ -5,7 +5,6 @@ import streamlit as st
 "# A simple web interface to chemistry and astrochemistry tools"
 "### Created and mainted by A.N. Marimuthu."
 st.info("Choose a tool from the sidebar to get started")
-# st.warning("This is a work in progress. Please report any bugs or issues to the author.")
 
 with st.sidebar:
     """
@@ -19,7 +18,7 @@ with st.sidebar:
         
         Check out the About section in sidebar on each page(s) for more information on the selected project.
         
-        Check out my [Github profile](https://github.com/aravindhnivas)
+        Source code of this project is available on [GitHub](https://github.com/aravindhnivas/astro-web)
 
     """
     
