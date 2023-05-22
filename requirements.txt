@@ -1,16 +1,12 @@
+# UMDA
 loguru==0.5.3
 gensim==3.8.3
-# setuptools==49.6.0
-# seaborn==0.11.1
-# palettable==3.3.0
-# click==7.1.2
 umap-learn
 networkx==2.8.8
 numba
 numpy
 rdkit
 scikit-learn==0.24.1
-# matplotlib
 dask
 dask-ml
 h5py
@@ -20,3 +16,13 @@ streamlit
 bokeh
 git+https://github.com/laserkelvin/mol2vec.git@850d944d5f48a58e26ed0264332b5741f72555aa#egg=mol2vec
 # git+https://github.com/samoturk/mol2vec
+
+# astromol
+bibtexparser
+numpy
+matplotlib
+colour
+scipy
+datetime
+python-pptx
+periodictable

@@ -5,10 +5,11 @@ from rdkit.Chem import Draw, rdMolDescriptors
 
 from joblib import load
 import numpy as np
-import importlib
+# import importlib
 import pandas as pd
 # import streamlit.components.v1 as components
-load_pipeline = importlib.import_module("umda.data").load_pipeline
+from umda.data import load_pipeline
+# load_pipeline = importlib.import_module("umda.data").load_pipeline
 st.set_page_config(page_title="UMDA", layout="wide")
 
 

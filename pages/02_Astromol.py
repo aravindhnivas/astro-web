@@ -1,8 +1,11 @@
 import streamlit as st
-
+# import importlib
+import astromol
+# astromol = importlib.import_module("astromol")
 st.set_page_config(page_title="Astromol", layout="wide")
 
 def main():
+    st.write(f"version {astromol.__version__}")
     about_page()
 
 def about_page():
