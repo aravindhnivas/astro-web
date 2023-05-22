@@ -9,7 +9,7 @@ import importlib
 import pandas as pd
 # import streamlit.components.v1 as components
 load_pipeline = importlib.import_module("umda.data").load_pipeline
-st.set_page_config(page_title="UMDA", page_icon=":rocket:", layout="wide")
+st.set_page_config(page_title="UMDA", layout="wide")
 
 
 @st.cache_data
@@ -21,19 +21,10 @@ def get_regressor():
     return embedder, regressors, regressor_list
 
 def main():
-    # Create a slider widget in the side panel
-    # with st.sidebar:
-    #     slider_val = st.slider('Select a value', 0, 100, 50)
-    
-    st.title("Unsupervised Molecule Discovery in Astrophysics (UMDA)")
-    st.write("This is a web interface for the UMDA project created by A.N. Marimuthu.")
-    st.write('Lee+, ‘Machine Learning of Interstellar Chemical Inventories’, ApJL, vol. 917, no. 1, p. L6, Aug. 2021, doi: 10.3847/2041-8213/ac194b.')
-    
-    paper_link_url = "https://iopscience.iop.org/article/10.3847/2041-8213/ac194b"
-    st.write("Read the paper on : ", paper_link_url)
-    
-    
     st.header('Column density prediction towards TMC-1')
+    st.warning("Enter a SMILES string of a molecule in the sidebar and choose a regressor model(s) to predict its column density. Some examples are provided below.")
+    
+    st.divider()
     
     with st.sidebar:
         # mol_representation = st.radio("Choose a molecular representation", ("SMILES", "Chemical formula"))
@@ -62,6 +53,7 @@ def main():
         img = Draw.MolToImage(mol_obj)
         chem_images.append(img)
         
+    st.subheader("Chemical structures of the molecules")
     st.image(chem_images, caption=formula_lists)
 
     embedder, regressors, regressor_list = get_regressor()
@@ -79,13 +71,36 @@ def main():
         regressor = regressors.get(regressor_model_name)
         prediction = regressor.predict(vecs)
         predictions.append(prediction)
-        
 
     predictions = np.vstack(predictions).T
 
-    st.subheader("Predicted Column Density (log$_{10}$ cm$^{-2}$) towards TMC-1 using the selected models")
+    st.subheader("Predicted Column Density (log$_{10}$ cm$^{-2}$) for the selected models")
+    
     df = pd.DataFrame(predictions, columns=regressor_model_lists, index=formula_lists)
-    st.table(df)
+    st.dataframe(df, use_container_width=True)
+    
+    about_page()
+
+def about_page():
+    
+    with st.sidebar:
+        st.divider()
+        """
+            ## About _UMDA_
+            A Database of Molecules Detected in Space
+            
+            The UMDA project which is created by Dr. Kelvin Lee.
+            
+            [Original source code](https://github.com/laserkelvin/umda)
+            
+            [Read paper](https://iopscience.iop.org/article/10.3847/2041-8213/ac194b))
+            
+            If you used the list of recommendations generated from this work as part of your own observations or work, please cite the Zenodo entry: [![DOI](https://zenodo.org/badge/360663606.svg)](https://zenodo.org/record/5080543)
+        """
     
 if __name__ == "__main__":
+    st.title("Unsupervised Molecule Discovery in Astrophysics (UMDA)")
+    # st.write("This web interface is created by A.N. Marimuthu.")
+    st.divider()
+    
     main()
