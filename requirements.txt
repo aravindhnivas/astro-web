@@ -1,12 +1,12 @@
 # UMDA
 loguru==0.5.3
 gensim==3.8.3
-umap-learn
 networkx==2.8.8
+scikit-learn==0.24.1
+umap-learn
 numba
 numpy
 rdkit
-scikit-learn==0.24.1
 dask
 dask-ml
 h5py
@@ -19,14 +19,4 @@ git+https://github.com/laserkelvin/mol2vec.git@850d944d5f48a58e26ed0264332b5741f
 
 # astromol
 git+https://github.com/bmcguir2/astromol.git@main
-# bibtexparser
-# numpy
-# matplotlib
-# colour
-# scipy
-# datetime
-# python-pptx
-# periodictable
-
-# 
 plotly
