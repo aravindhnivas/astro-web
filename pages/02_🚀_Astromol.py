@@ -294,9 +294,8 @@ def about_page():
             
             [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
             
-            [Original source code](https://github.com/bmcguir2/astromol)
-            
-            [Read paper](https://iopscience.iop.org/article/10.3847/1538-4365/aae5d2)
+            Code and models are available on [GitHub](https://github.com/bmcguir2/astromol), 
+            and  [published paper](https://iopscience.iop.org/article/10.3847/1538-4365/aae5d2) 📃
             
             If you use `astromol` for your own work, please cite the Zenodo entry: [![DOI](https://zenodo.org/badge/360663606.svg)](https://zenodo.org/badge/latestdoi/360663606)
         """

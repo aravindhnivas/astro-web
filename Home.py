@@ -1,24 +1,24 @@
 import streamlit as st
-
-# st.set_page_config(page_title="Home", page_icon=":rocket:", layout="wide")
+st.set_page_config(page_title="Home", page_icon="", layout="wide")
 
 "# A simple web interface to chemistry and astrochemistry tools"
-# "### Created and mainted by A.N. Marimuthu."
 st.info("Choose a tool from the sidebar to get started")
 
 with st.sidebar:
     """
         ## About myself
         
-        I am Aravindh, a PhD student at the Radboud University, Nijmege, the Netherlands.
-        I am a experimental spectroscopist of cold molecular ions that are relevant to interstellar medium (ISM).
-        I am interested in astrochemistry and machine learning.
+        I am Aravindh Nivas Marimuthu(call me Aravindh), a PhD student at the Radboud University, Nijmegen, the Netherlands.
+        I am a experimental spectroscopist of cold molecular ions :cold_face: that are relevant to interstellar medium (ISM ).
+        
+        I am interested in astrochemistry :rocket: and machine learning :slot_machine:.
         
         Check out the About section in sidebar on each page(s) for more information on the selected project.
         
         Source code of this project is available on [GitHub](https://github.com/aravindhnivas/astro-web)
         
         [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+        [![](https://img.shields.io/badge/python-v3.9-blue)](https://www.python.org/)
 
     """
     

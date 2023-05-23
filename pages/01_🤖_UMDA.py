@@ -13,7 +13,6 @@ st.set_page_config(page_title="UMDA", layout="wide")
 
 @st.cache_data
 def get_regressor():
-    # load a wrapper class for generating embeddings
     embedder = load_pipeline()
     regressors = load("models/regressors.pkl")
     regressor_list = list(regressors.keys())
@@ -41,9 +40,7 @@ def main():
     for mol in molecules_name_lists:
         
         smiles = mol
-        # Generate an RDKit molecule object from the SMILES string
         mol_obj = Chem.MolFromSmiles(smiles)
-        # Generate a chemical formula from the molecule object
         formula = rdMolDescriptors.CalcMolFormula(mol_obj)
         
         formula_lists.append(formula)
@@ -91,7 +88,7 @@ def about_page():
             
             [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
             
-            Code and models are available on [GitHub](https://github.com/laserkelvin/umda), and published in [Ap. J. Letters](https://iopscience.iop.org/article/10.3847/2041-8213/ac194b)
+            Code and models are available on [GitHub](https://github.com/laserkelvin/umda), and [published paper](https://iopscience.iop.org/article/10.3847/2041-8213/ac194b) 📃
             
             If you used the list of recommendations generated from this work as part of your own observations or work, please cite the Zenodo entry: [![DOI](https://zenodo.org/badge/360663606.svg)](https://zenodo.org/record/5080543)
         """
