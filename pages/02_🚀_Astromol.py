@@ -212,7 +212,6 @@ def get_telescopes():
     return fig
 
 def telescopes_full_lists():
-    # full telescope table
     df = pd.DataFrame({
         'name': [_.name for _ in astro.all_telescopes],
         'shortname': [_.shortname for _ in astro.all_telescopes],
@@ -222,12 +221,14 @@ def telescopes_full_lists():
         'latitude': [_.latitude for _ in astro.all_telescopes],
         'longitude': [_.longitude for _ in astro.all_telescopes],
         'built': [_.built for _ in astro.all_telescopes],
-        'decommissioned': [_.decommissioned for _ in astro.all_telescopes],
+        'decommissioned': [f"{_.decommissioned if _.decommissioned else '-'}" for _ in astro.all_telescopes],
         'ndetects': [_.ndetects for _ in astro.all_telescopes],
     })
+    
     st.dataframe(df, use_container_width=True)
-        
+    
 def main():
+    
     intro()
     
     telescopes_tab, molecules_tab = st.tabs(["Telescopes", "Molecules"])
