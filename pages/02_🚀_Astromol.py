@@ -211,7 +211,22 @@ def get_telescopes():
     
     return fig
 
-
+def telescopes_full_lists():
+    # full telescope table
+    df = pd.DataFrame({
+        'name': [_.name for _ in astro.all_telescopes],
+        'shortname': [_.shortname for _ in astro.all_telescopes],
+        'type': [_.type for _ in astro.all_telescopes],
+        'diameter (in m)': [_.diameter for _ in astro.all_telescopes],
+        'wavelength': [_.wavelength for _ in astro.all_telescopes],
+        'latitude': [_.latitude for _ in astro.all_telescopes],
+        'longitude': [_.longitude for _ in astro.all_telescopes],
+        'built': [_.built for _ in astro.all_telescopes],
+        'decommissioned': [_.decommissioned for _ in astro.all_telescopes],
+        'ndetects': [_.ndetects for _ in astro.all_telescopes],
+    })
+    st.dataframe(df, use_container_width=True)
+        
 def main():
     intro()
     
@@ -244,10 +259,12 @@ def main():
         )
         st.plotly_chart(get_telescopes(), use_container_width=True)
         
+        
         st.subheader("Telescopes summary")
+        telescopes_full_lists()
+        
         selected_telescope = st.selectbox("Select a telescope", [_.name for _ in astro.all_telescopes])
         selected_telescope_obj = [_ for _ in astro.all_telescopes if _.name == selected_telescope][0]
-        # st.subheader(f"{selected_telescope_obj.name} summary")
         telescope_summary(selected_telescope_obj)
         
     with molecules_tab:
