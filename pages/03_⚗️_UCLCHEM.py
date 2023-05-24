@@ -63,7 +63,7 @@ def main():
     out_species = [_.strip() for _ in species.split(',')]
     
     param_dict = parameters | behaviour_parameters | input_output_parameters | integration_controls
-    result = uclchem.model.cloud(param_dict=param_dict, out_species=out_species)
+    # result = uclchem.model.cloud(param_dict=param_dict, out_species=out_species)
     
     st.write(uclchem)
     
