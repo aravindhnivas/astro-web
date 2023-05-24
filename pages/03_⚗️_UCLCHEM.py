@@ -1,12 +1,17 @@
 import streamlit as st
-import UCLCHEM as uclchem
+from UCLCHEM.src import uclchem
+from pathlib import Path as pt
 from pages.UCLCHEM.parameters import (
     get_parameters, get_behavioural_parameters, 
     get_input_output_parameters, get_integration_controls
 )
 
+loc = pt("./pages/UCLCHEM/outputs").absolute()
+# loc = "./pages/UCLCHEM/outputs"
+
 def about_page():
     st.divider()
+    
     with st.sidebar:
         """
             ## About _UCLCHEM_
@@ -43,10 +48,16 @@ def main():
         behaviour_parameters = get_behavioural_parameters()
     with st.expander("Input and Output parameters"):
         input_output_parameters = get_input_output_parameters()
+        
+        input_output_parameters_filtered = {
+            key: str(loc / value)
+            for key, value in input_output_parameters.items() if key != 'writeStep' and value
+        }
+        input_output_parameters_filtered['writeStep'] = input_output_parameters['writeStep']
+        
+        
     with st.expander("Integration Controls"):
         integration_controls = get_integration_controls()
-    
-    # st.write(parameters, behaviour_parameters, input_output_parameters, integration_controls)
     
     st.divider()
     
@@ -61,12 +72,14 @@ def main():
     
     species = st.text_input("outSpecies", value='SO, CO')
     out_species = [_.strip() for _ in species.split(',')]
+    param_dict = parameters | input_output_parameters_filtered | behaviour_parameters | integration_controls
     
-    param_dict = parameters | behaviour_parameters | input_output_parameters | integration_controls
-    # result = uclchem.model.cloud(param_dict=param_dict, out_species=out_species)
-    
-    st.write(uclchem)
-    
+    if st.button('Run calculations'):
+        with st.spinner('Wait for it...'):
+            st.success('Finished.')
+            result = uclchem.model.cloud(param_dict=param_dict, out_species=out_species)
+            st.write(result)
+   
 if __name__ == "__main__":
     main()
     about_page()
