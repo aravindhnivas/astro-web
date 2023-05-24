@@ -308,6 +308,12 @@ def main():
     if st.button("read data"):
         data = np.load("./data.npy")
         st.write(data)
+    
+    if st.button("Show files"):
+        
+        print("showing files")
+        
+        print(list(loc.glob("*")))
         
     about_page()
 
