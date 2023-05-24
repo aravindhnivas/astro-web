@@ -1,5 +1,5 @@
 import streamlit as st
-from UCLCHEM import uclchem
+import UCLCHEM as uclchem
 from pages.UCLCHEM.parameters import (
     get_parameters, get_behavioural_parameters, 
     get_input_output_parameters, get_integration_controls
@@ -65,7 +65,7 @@ def main():
     param_dict = parameters | behaviour_parameters | input_output_parameters | integration_controls
     result = uclchem.model.cloud(param_dict=param_dict, out_species=out_species)
     
-    st.write(result)
+    st.write(uclchem)
     
 if __name__ == "__main__":
     main()
