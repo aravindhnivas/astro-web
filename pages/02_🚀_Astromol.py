@@ -296,24 +296,24 @@ def main():
         
         molecule_summary(selected_molecule_obj)
         
-    loc = pt("./")
-    st.write(loc.cwd())
-    st.write(list(loc.glob("*")))
+    # loc = pt("./")
+    # st.write(loc.cwd())
+    # st.write(list(loc.glob("*")))
     
-    if st.button("save data"):
-        data = np.arange(10)
-        np.save("./data.npy", data)
-        st.write("data saved")
+    # if st.button("save data"):
+    #     data = np.arange(10)
+    #     np.save("./data.npy", data)
+    #     st.write("data saved")
         
-    if st.button("read data"):
-        data = np.load("./data.npy")
-        st.write(data)
+    # if st.button("read data"):
+    #     data = np.load("./data.npy")
+    #     st.write(data)
     
-    if st.button("Show files"):
+    # if st.button("Show files"):
         
-        print("showing files")
+    #     print("showing files")
         
-        print(list(loc.glob("*")))
+    #     print(list(loc.glob("*")))
         
     about_page()
 
