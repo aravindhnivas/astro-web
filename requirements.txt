@@ -25,4 +25,4 @@ plotly
 pyyaml
 seaborn
 matplotlib
--e UCLCHEM
+# -e UCLCHEM
