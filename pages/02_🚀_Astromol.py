@@ -298,7 +298,7 @@ def main():
         
     loc = pt("./")
     st.write(loc.cwd())
-    st.write(list(loc.glob("*.npy")))
+    st.write(list(loc.glob("*")))
     
     if st.button("save data"):
         data = np.arange(10)
