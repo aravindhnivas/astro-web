@@ -1,4 +1,5 @@
 import streamlit as st
+from pathlib import Path as pt
 
 def get_parameters():
     
@@ -33,7 +34,7 @@ def get_parameters():
         "rout": float(rout),
         "rin": float(rin),
         "baseAv": float(baseAv),
-        "points": float(points)
+        "points": int(points)
     }
     
 
@@ -57,8 +58,8 @@ def get_behavioural_parameters():
     improvedH2CRPDissociation = col2.checkbox("improvedH2CRPDissociation", value=False, help="Use H2 CRP dissociation rate from Padovani et al. 2018b")
     
     
-    freezeFactor = col3.number_input("freezeFactor", value=10, help="Modify freefall rate by factor, usually to slow it")
-    freefallFactor = col3.number_input("freefallFactor", value=0, help="Modify freeze out rate of gas parcels by this factor")
+    freezeFactor = col3.number_input("freezeFactor", value=1, help="Modify freefall rate by factor, usually to slow it")
+    freefallFactor = col3.number_input("freefallFactor", value=1.0, help="Modify freeze out rate of gas parcels by this factor")
     ionModel = col3.text_input("ionModel", value="L", help="L/H model for cosmic ray attenuation Padovani et al. 2018")
     
     
@@ -85,21 +86,29 @@ def get_input_output_parameters():
     
     col1, col2 = st.columns(2)
     
-    outputFile = col1.text_input("outputFile", value="output/full.dat", help="File to write full output of UCLCHEM. This includes physical parameter values and all abundances at every time step")
-    columnFile = col1.text_input("columnFile", value="output/column.dat", help="File to write specific species abundances, see outSpecies")
+    outputFile = col1.text_input("outputFile", value="", help="File to write full output of UCLCHEM. This includes physical parameter values and all abundances at every time step")
+    columnFile = col1.text_input("columnFile", value="", help="File to write specific species abundances, see outSpecies")
     writeStep = col1.number_input("writeStep", value=1, help="Writing to columnFile only happens every writeStep timesteps")
-    abundSaveFile = col2.text_input("abundSaveFile", value=None, help="File to store final abundances at the end of the model so future models can use them as the initial abundances. If not provided, no file will be produced")
-    abundLoadFile = col2.text_input("abundLoadFile", value=None, help="File from which to load initial abundances for the model, created through abundSaveFile. If not provided, the model starts from elemental gas")
-    outSpecies = col2.text_input("outSpecies", value=None, help="A space separated list of species to output to columnFile. Supplied as a separate list argument to most python functions, see python API docs")
+    abundSaveFile = col2.text_input("abundSaveFile", value="", help="File to store final abundances at the end of the model so future models can use them as the initial abundances. If not provided, no file will be produced")
+    abundLoadFile = col2.text_input("abundLoadFile", value="", help="File from which to load initial abundances for the model, created through abundSaveFile. If not provided, the model starts from elemental gas")
+    outSpecies = col2.text_input("outSpecies", value="", help="A space separated list of species to output to columnFile. Supplied as a separate list argument to most python functions")
     
-    return {
+    # loc = pt("./pages/UCLCHEM/outputs").absolute()
+    # st.write(str(loc))
+    # outputFile = str(loc / outputFile)
+    # columnFile = str(loc / outputFile)
+    
+    # parameters = {"writeStep": writeStep}
+    parameters = {
         "outputFile": outputFile,
         "columnFile": columnFile,
-        "writeStep": writeStep,
         "abundSaveFile": abundSaveFile,
         "abundLoadFile": abundLoadFile,
-        "outSpecies": outSpecies
+        "writeStep": int(writeStep),
+        "outSpecies": outSpecies,
     }
+        
+    return parameters
     
 
 def get_integration_controls():
@@ -111,13 +120,13 @@ def get_integration_controls():
     reltol = col1.text_input("reltol", value="1e-8", help="Relative tolerance for integration, see integration docs for advice")
     abstol_factor = col2.text_input("abstol_factor", value="1e-14", help="Absolute tolerance for integration is calculated by multiplying species abundance by this factor")
     abstol_min = col3.text_input("abstol_min", value="1e-25", help="Minimum value absolute tolerances can take")
-    MXSTEP = col4.number_input("MXSTEP", value=10000, help="Maximum steps allowed in integration before warning is thrown")
+    # MXSTEP = col4.number_input("MXSTEP", value=10000, help="Maximum steps allowed in integration before warning is thrown")
     
     return {
         "reltol": float(reltol),
         "abstol_factor": float(abstol_factor),
         "abstol_min": float(abstol_min),
-        "MXSTEP": float(MXSTEP)
+        # "MXSTEP": int(MXSTEP)
     }
     
     
