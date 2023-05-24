@@ -1,5 +1,5 @@
 import streamlit as st
-import UCLCHEM as uclchem
+from UCLCHEM import uclchem
 from pages.UCLCHEM.parameters import (
     get_parameters, get_behavioural_parameters, 
     get_input_output_parameters, get_integration_controls
