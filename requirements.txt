@@ -22,7 +22,7 @@ git+https://github.com/bmcguir2/astromol.git@main
 plotly
 
 # UCLCHEM
-git+https://github.com/uclchem/UCLCHEM.git@main
+# git+https://github.com/uclchem/UCLCHEM.git@main
 pyyaml
 seaborn
 matplotlib
