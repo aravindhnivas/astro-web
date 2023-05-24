@@ -3,6 +3,9 @@ import astromol as astro
 import plotly.express as px
 import pandas as pd
 
+import json
+import numpy as np
+
 st.set_page_config(page_title="Astromol", layout="wide")
 
 def intro():
@@ -75,8 +78,7 @@ def molecule_refs_summary(molecule: astro.Molecule):
 
     if molecule.ice == True or molecule.ice == "Tentative":
         st.write("**Ice Reference(s)**")
-        # st.write("[Det] {}".format(molecule.ice_d_refs))
-        # st.write("[Lab] {}".format(molecule.ice_l_refs))
+        
         st.markdown(f"""
             - [Det] {molecule.ice_d_refs}
             - [Lab] {molecule.ice_l_refs}
@@ -84,12 +86,10 @@ def molecule_refs_summary(molecule: astro.Molecule):
 
     if molecule.ppd == True or molecule.ppd == "Tentative":
         st.write("**Protoplanetary Disks Reference(s)**")
-        # st.write("[{}] {}".format(molecule.formula, molecule.ppd_d_refs))
         strs = f"- [{molecule.formula}] {molecule.ppd_d_refs}\n"
         
         if molecule.ppd_isos != None:
             for x in molecule.ppd_isos:
-                # st.write(f"[{x.formula}] {x.ppd_d_refs}")
                 strs += f"- [{x.formula}] {x.ppd_d_refs}\n"
         st.markdown(strs)
 
@@ -99,11 +99,9 @@ def molecule_refs_summary(molecule: astro.Molecule):
 
     if molecule.exo == True or molecule.exo == "Tentative":
         st.write("**Exoplanetary Atmospheres Reference(s)**")
-        # st.write("[{}] {}".format(molecule.formula, molecule.exo_d_refs))
         strs = f"- [{molecule.formula}] {molecule.exo_d_refs}\n"
         if molecule.exo_isos != None:
             for x in molecule.exo_isos:
-                # st.write(f"[{x.formula}] {x.exo_d_refs}")
                 strs += f"- [{x.formula}] {x.exo_d_refs}\n"
         st.markdown(strs)
             
@@ -291,12 +289,21 @@ def main():
         }, index=['count', 'percentage (%)'], dtype=float).T
             
         st.dataframe(df, use_container_width=True)
-        
         st.subheader("Molecule summary")
         selected_molecule = st.selectbox("Select a molecule", [_.name for _ in astro.all_molecules])
         selected_molecule_obj = [_ for _ in astro.all_molecules if _.name == selected_molecule][0]
+        
         molecule_summary(selected_molecule_obj)
-    
+        
+    if st.button("save data"):
+        data = np.arange(10)
+        np.save("./data.npy", data)
+        st.write("data saved")
+        
+    if st.button("read data"):
+        data = np.load("./data.npy")
+        st.write(data)
+        
     about_page()
 
 def about_page():
@@ -304,7 +311,6 @@ def about_page():
     with st.sidebar:
         """
             ## About _astromol_
-            
 
             A Database of Molecules Detected in Space
             
@@ -320,6 +326,5 @@ def about_page():
         
 if __name__ == "__main__":
     st.title("Astromol")
-    # st.write("This web interface is created by A.N. Marimuthu.")
     main()
     
