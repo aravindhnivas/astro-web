@@ -1,5 +1,5 @@
 import streamlit as st
-st.set_page_config(page_title="Home", page_icon="", layout="wide")
+st.set_page_config(page_title="Home", layout="wide")
 
 "# A simple web interface to chemistry and astrochemistry tools"
 st.info("Choose a tool from the sidebar to get started")
@@ -34,5 +34,3 @@ As someone who is passionate about science and technology, I believe that it's i
 """
 
 st.warning("This is a work in progress. Please report any bugs or issues by email - aravindhnivas28+astrochemistry@gmail.com.")
-
-    
