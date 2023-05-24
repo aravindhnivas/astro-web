@@ -58,7 +58,7 @@ def get_behavioural_parameters():
     improvedH2CRPDissociation = col2.checkbox("improvedH2CRPDissociation", value=False, help="Use H2 CRP dissociation rate from Padovani et al. 2018b")
     
     
-    freezeFactor = col3.number_input("freezeFactor", value=1, help="Modify freefall rate by factor, usually to slow it")
+    freezeFactor = col3.number_input("freezeFactor", value=1.0, help="Modify freefall rate by factor, usually to slow it")
     freefallFactor = col3.number_input("freefallFactor", value=1.0, help="Modify freeze out rate of gas parcels by this factor")
     ionModel = col3.text_input("ionModel", value="L", help="L/H model for cosmic ray attenuation Padovani et al. 2018")
     
