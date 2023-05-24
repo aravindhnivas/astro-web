@@ -5,6 +5,7 @@ import pandas as pd
 
 import json
 import numpy as np
+from pathlib import Path as pt
 
 st.set_page_config(page_title="Astromol", layout="wide")
 
@@ -295,6 +296,10 @@ def main():
         
         molecule_summary(selected_molecule_obj)
         
+    loc = pt("./")
+    st.write(loc.cwd())
+    st.write(list(loc.glob("*.npy")))
+    
     if st.button("save data"):
         data = np.arange(10)
         np.save("./data.npy", data)
