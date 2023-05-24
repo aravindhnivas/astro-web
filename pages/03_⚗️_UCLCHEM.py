@@ -29,15 +29,12 @@ def about_page():
             
         """
 
-def simple_model():
-    st.subheader("Simple model")
-    st.write("The simple model is a 1D model of a static cloud with a constant density and temperature. The model is run for a specified time and the abundances of the chemical species are outputted at the end of the run.")
-
 
 def main():
     
     st.header("UCLCHEM")
     st.write("A Gas-grain Chemical Code for Clouds, Cores, and C-Shocks")
+    # st.write(f"version: {uclchem.__version__}")
     st.divider()
     
     st.subheader("Fine-tuning the model")
@@ -75,11 +72,11 @@ def main():
     param_dict = parameters | input_output_parameters_filtered | behaviour_parameters | integration_controls
     
     if st.button('Run calculations'):
-        with st.spinner('Wait for it...'):
-            st.success('Finished.')
-            result = uclchem.model.cloud(param_dict=param_dict, out_species=out_species)
-            st.write(result)
-   
+        st.success('Finished.')
+        
+        result = uclchem.model.cloud(param_dict=param_dict, out_species=out_species)
+        st.write(result)
+
 if __name__ == "__main__":
     main()
     about_page()
