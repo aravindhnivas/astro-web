@@ -1,5 +1,5 @@
 import streamlit as st
-# from UCLCHEM.src import uclchem
+from UCLCHEM.src import uclchem
 from pathlib import Path as pt
 from pages.UCLCHEM.parameters import (
     get_parameters, get_behavioural_parameters, 
@@ -71,11 +71,11 @@ def main():
     out_species = [_.strip() for _ in species.split(',')]
     param_dict = parameters | input_output_parameters_filtered | behaviour_parameters | integration_controls
     
-    # if st.button('Run calculations'):
-    #     st.success('Finished.')
+    if st.button('Run calculations'):
+        st.success('Finished.')
         
-    #     result = uclchem.model.cloud(param_dict=param_dict, out_species=out_species)
-    #     st.write(result)
+        result = uclchem.model.cloud(param_dict=param_dict, out_species=out_species)
+        st.write(result)
 
 if __name__ == "__main__":
     main()
