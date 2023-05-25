@@ -3,10 +3,6 @@ import astromol as astro
 import plotly.express as px
 import pandas as pd
 
-import json
-import numpy as np
-from pathlib import Path as pt
-
 st.set_page_config(page_title="Astromol", layout="wide")
 
 def intro():
@@ -257,8 +253,8 @@ def main():
             The following figure shows the number of molecules detected by each telescope. The size of the circle is proportional to the number of molecules detected by that telescope. The larger the circle, the more molecules have been detected by that telescope.
             """
         )
-        st.plotly_chart(get_telescopes(), use_container_width=True)
         
+        st.plotly_chart(get_telescopes(), use_container_width=True)
         
         st.subheader("Telescopes summary")
         telescopes_full_lists()
@@ -295,25 +291,6 @@ def main():
         selected_molecule_obj = [_ for _ in astro.all_molecules if _.name == selected_molecule][0]
         
         molecule_summary(selected_molecule_obj)
-        
-    # loc = pt("./")
-    # st.write(loc.cwd())
-    # st.write(list(loc.glob("*")))
-    
-    # if st.button("save data"):
-    #     data = np.arange(10)
-    #     np.save("./data.npy", data)
-    #     st.write("data saved")
-        
-    # if st.button("read data"):
-    #     data = np.load("./data.npy")
-    #     st.write(data)
-    
-    # if st.button("Show files"):
-        
-    #     print("showing files")
-        
-    #     print(list(loc.glob("*")))
         
     about_page()
 
