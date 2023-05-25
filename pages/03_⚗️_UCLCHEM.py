@@ -84,15 +84,23 @@ def main():
     
     param_dict = parameters | input_output_parameters_filtered | behaviour_parameters | integration_controls
     time_start = perf_counter()
+    
     if st.button('Run calculations'):
         
-        if not re.match(r'^[a-zA-Z0-9+,\-]+$', species):
-            st.error("The formula contains invalid characters.")
-            return
+        for mol in out_species:
+            if not re.match(r'^[a-zA-Z][a-zA-Z0-9+,\-]+$', mol):
+                st.error(f"{mol} contains invalid characters. Please change it to continue")
+                return
+            
         result = uclchem.model.cloud(param_dict=param_dict, out_species=out_species)
         st.write(result)
-        st.success(f'Finished in {(perf_counter() - time_start):.2f} seconds')
-
+        
+        status = result[0]
+        if status > 0:
+            st.success(f'Finished in {(perf_counter() - time_start):.2f} seconds')
+        else:
+            st.error('Error occured during calculation')
+            
 if __name__ == "__main__":
     
     main()
