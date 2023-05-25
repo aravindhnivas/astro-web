@@ -9,18 +9,18 @@ def get_parameters():
     col1, col2, col3, col4 = st.columns(4)
     
     initialTemp = col1.text_input("initialTemp", value="10", help="Initial gas temperature in Kelvin for all gas parcels in model")
-    initialDens = col1.text_input("initialDens", value="1e2", help="Initial gas density in cm^-3 for all gas parcels in model")
+    initialDens = col1.text_input("initialDens", value="1e4", help="Initial gas density in cm^-3 for all gas parcels in model")
     finalDens = col1.text_input("finalDens", value="1e5", help="Final gas density achieved via freefall")
     
     currentTime = col2.text_input("currentTime", value="0", help="Time at start of model in years")
-    finalTime = col2.text_input("finalTime", value="5e6", help="Time to stop model in years, if not using `endAtFinalDensity` below")
+    finalTime = col2.text_input("finalTime", value="1e6", help="Time to stop model in years, if not using `endAtFinalDensity` below")
     radfield = col2.text_input("radfield", value="1", help="Interstellar radiation field in Habing")
     
     zeta = col3.text_input("zeta", value="1", help="Cosmic ray ionisation rate as multiple of 1.3e-17 s^-1")
-    rout = col3.text_input("rout", value="0.05", help="Outer radius of cloud being modelled in pc")
+    rout = col3.text_input("rout", value="0.1", help="Outer radius of cloud being modelled in pc")
     rin = col3.text_input("rin", value="0", help="Minimum radial distance from cloud centre to consider")
     
-    baseAv = col4.text_input("baseAv", value="2", help="Extinction at cloud edge, Av of a parcel at rout")
+    baseAv = col4.text_input("baseAv", value="1", help="Extinction at cloud edge, Av of a parcel at rout")
     points = col4.text_input("points", value="1", help="Number of gas parcels equally spaced between rin to rout to consider")
     
     return {
