@@ -34,6 +34,9 @@ def about_page():
 def set_loc(filename: str):
     if not filename.endswith('.dat'):
         filename = filename + ".dat"
+    
+    if not loc.exists(): 
+        loc.mkdir()
         
     return str(loc / filename)
 
