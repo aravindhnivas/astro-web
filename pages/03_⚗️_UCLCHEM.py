@@ -74,7 +74,7 @@ def simple_cloud_model_calc():
                         
         """)
         
-        element_list = st.text_input('elements', value='H, N, C, O, S')
+        element_list = st.text_input('Enter elements', value='H, N, C, O, S')
         element_list_arr = [_.strip() for _ in element_list.split(',')]
         conservation=uclchem.analysis.check_element_conservation(result_df, element_list=element_list_arr)
         st.write("Percentage change in total abundances:")
@@ -94,7 +94,7 @@ def simple_cloud_model_calc():
             Note the use of $ symbols in the species list below, this gets the total ice abundance of a species. For two phase models, this is just the surface abudance but for three phase it is the sum of surface and bulk.
         """)
         
-        species = st.text_input('species', value='H, H2, $H, $H2, H2O, $H2O, CO, $CO, $CH3OH, CH3OH')
+        species = st.text_input('Enter species', value='H, H2, $H, $H2, H2O, $H2O, CO, $CO, $CH3OH, CH3OH')
         species_list = [_.strip() for _ in species.split(',')]
         
         # col1, col2 = st.columns(2)
