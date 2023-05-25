@@ -1,10 +1,12 @@
 import streamlit as st
 from UCLCHEM.src import uclchem
 from pathlib import Path as pt
+import re
 from pages.UCLCHEM.parameters import (
     get_parameters, get_behavioural_parameters, 
     get_input_output_parameters, get_integration_controls
 )
+from time import perf_counter
 
 loc = pt("./pages/UCLCHEM/outputs").absolute()
 # loc = "./pages/UCLCHEM/outputs"
@@ -29,7 +31,13 @@ def about_page():
             
         """
 
+def set_loc(filename: str):
+    if not filename.endswith('.dat'):
+        filename = filename + ".dat"
+        
+    return str(loc / filename)
 
+    
 def main():
     
     st.header("UCLCHEM")
@@ -47,7 +55,7 @@ def main():
         input_output_parameters = get_input_output_parameters()
         
         input_output_parameters_filtered = {
-            key: str(loc / value)
+            key: set_loc(value)
             for key, value in input_output_parameters.items() if key != 'writeStep' and value
         }
         input_output_parameters_filtered['writeStep'] = input_output_parameters['writeStep']
@@ -67,17 +75,23 @@ def main():
         
     """)
     
-    species = st.text_input("outSpecies", value='SO, CO')
-    out_species = [_.strip() for _ in species.split(',')]
-    param_dict = parameters | input_output_parameters_filtered | behaviour_parameters | integration_controls
+    species = st.text_input("outSpecies", value='SO, CO+')
     
+    out_species = [_.strip() for _ in species.split(',')]
+    
+    param_dict = parameters | input_output_parameters_filtered | behaviour_parameters | integration_controls
+    time_start = perf_counter()
     if st.button('Run calculations'):
-        st.success('Finished.')
         
+        if not re.match(r'^[a-zA-Z0-9+,\-]+$', species):
+            st.error("The formula contains invalid characters.")
+            return
         result = uclchem.model.cloud(param_dict=param_dict, out_species=out_species)
         st.write(result)
+        st.success(f'Finished in {(perf_counter() - time_start):.2f} seconds')
 
 if __name__ == "__main__":
+    
     main()
     about_page()
-        
+    
