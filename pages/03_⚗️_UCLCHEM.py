@@ -48,16 +48,38 @@ def set_loc(filename: str):
 
 
 def simple_cloud_model_calc():
+    global param_dict
     
-    # if status < 0: return
+    st.markdown("""
+        ## A Simple Cloud
+
+        UCLCHEM's `cloud` model is a spherical cloud of isothermal gas. We can keep a constant density or have it increase over time following a freefall equation. This model is generally useful whenever you want to model a homogeneous cloud of gas under constant conditions. For example, in the inner parts of a molecular cloud where Av $\gtrsim$ 10 there are very few depth dependent processes. You may wish to model the whole of this UV shielded portion of the cloud with a single `cloud` model.
+
+       _You can find a complete list of modifiable parameters and their default values as above._
+        
+    """)
     
-    # result_df: pd.DataFrame = None
-    # with st.expander("Show full output"):
-    #     if file_saved:
-    #         result_df = uclchem.analysis.read_output_file(param_dict['outputFile'])
-    #         st.dataframe(result_df)
-    #     else:
-    #         st.warning("No outputFile mentioned so cannot continue with further analysis")
+    input_output_parameters = {
+        "writeStep": 1,
+        # "abundLoadFile": set_loc("abundance"),
+        "abundSaveFile": set_loc("abundSaveFile"),
+        # "columnFile": set_loc("columnFile"),
+        "outputFile": set_loc("outputFile"),
+    }
+    
+    param_dict = param_dict | input_output_parameters
+
+    if not ('outputFile' in param_dict and param_dict['outputFile']):
+        param_dict['outputFile'] = set_loc('outputFile')
+    
+    
+    if st.button('Run calculations'):
+        time_start = perf_counter()
+        
+        status, *_ = uclchem.model.cloud(param_dict=param_dict)
+        if status < 0:
+            return st.error('Error occured during calculation')
+        st.success(f'Finished in {(perf_counter() - time_start):.2f} seconds')
     
     if not pt(param_dict['outputFile']).exists():
         return st.warning("After setting appropriate parameters (above); Run calculation to show results")
@@ -152,44 +174,13 @@ def main():
         
     with st.expander("Integration Controls"):
         integration_controls = get_integration_controls()
-    
+    param_dict = parameters | behaviour_parameters | integration_controls
     st.divider()
     
-    st.markdown("""
-        ## A Simple Cloud
-
-        UCLCHEM's `cloud` model is a spherical cloud of isothermal gas. We can keep a constant density or have it increase over time following a freefall equation. This model is generally useful whenever you want to model a homogeneous cloud of gas under constant conditions. For example, in the inner parts of a molecular cloud where Av $\gtrsim$ 10 there are very few depth dependent processes. You may wish to model the whole of this UV shielded portion of the cloud with a single `cloud` model.
-
-       _You can find a complete list of modifiable parameters and their default values as above._
-        
-    """)
+    tab1, = st.tabs(['Simple cloud model'])
     
-    # species = st.text_input("outSpecies", value='SO, CO+')
-    # out_species = [_.strip() for _ in species.split(',')]
-    input_output_parameters = {
-        "writeStep": 1,
-        # "abundLoadFile": set_loc("abundance"),
-        "abundSaveFile": set_loc("abundSaveFile"),
-        # "columnFile": set_loc("columnFile"),
-        "outputFile": set_loc("outputFile"),
-    }
-    param_dict = parameters | input_output_parameters | behaviour_parameters | integration_controls
-
-    if not ('outputFile' in param_dict and param_dict['outputFile']):
-        param_dict['outputFile'] = set_loc('outputFile')
-    
-    
-    if st.button('Run calculations'):
-        time_start = perf_counter()
-        
-        status, *_ = uclchem.model.cloud(param_dict=param_dict)
-        if status < 0:
-            return st.error('Error occured during calculation')
-        st.success(f'Finished in {(perf_counter() - time_start):.2f} seconds')
-        
-        
-    # st.button('Show result', on_click=simple_cloud_model_calc)
-    simple_cloud_model_calc()
+    with tab1:
+        simple_cloud_model_calc()
         
         
 if __name__ == "__main__":
