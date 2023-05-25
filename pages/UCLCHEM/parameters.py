@@ -86,10 +86,10 @@ def get_input_output_parameters():
     
     col1, col2 = st.columns(2)
     
-    outputFile = col1.text_input("outputFile", value="", help="File to write full output of UCLCHEM. This includes physical parameter values and all abundances at every time step")
-    columnFile = col1.text_input("columnFile", value="", help="File to write specific species abundances, see outSpecies")
+    outputFile = col1.text_input("outputFile", value="outputFile", help="File to write full output of UCLCHEM. This includes physical parameter values and all abundances at every time step")
+    columnFile = col1.text_input("columnFile", value="columnFile", help="File to write specific species abundances, see outSpecies")
     writeStep = col1.number_input("writeStep", value=1, help="Writing to columnFile only happens every writeStep timesteps")
-    abundSaveFile = col2.text_input("abundSaveFile", value="", help="File to store final abundances at the end of the model so future models can use them as the initial abundances. If not provided, no file will be produced")
+    abundSaveFile = col2.text_input("abundSaveFile", value="abundSaveFile", help="File to store final abundances at the end of the model so future models can use them as the initial abundances. If not provided, no file will be produced")
     abundLoadFile = col2.text_input("abundLoadFile", value="", help="File from which to load initial abundances for the model, created through abundSaveFile. If not provided, the model starts from elemental gas")
     outSpecies = col2.text_input("outSpecies", value="", help="A space separated list of species to output to columnFile. Supplied as a separate list argument to most python functions")
     
