@@ -22,18 +22,21 @@ def about_page():
     
     with st.sidebar:
         """
-            ## About _UCLCHEM_
+            ## About _UCLCHEM_ (v3.2.0)
 
             A Gas-Grain Chemical Code for astrochemical modelling
             
-            UCLCHEM is a gas-grain chemical code for astrochemical modelling that can be used as a stand alone Fortran program or a Python module. It propagates the abundances of chemical species through a network of user-defined reactions according to the physical conditions of the gas.
+            UCLCHEM is a gas-grain chemical code for astrochemical modelling. It propagates the abundances of chemical species through a network of user-defined reactions according to the physical conditions of the gas.
             
             visit [here](https://uclchem.github.io/) for more information.
             
             [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
             
             Code and models are available on [GitHub](https://github.com/uclchem/UCLCHEM), 
-            and  [published paper](https://ui.adsabs.harvard.edu/abs/2017AJ....154...38H/abstract) 📃
+            and  [published paper](https://iopscience.iop.org/article/10.3847/1538-3881/aa773f)
+            📃
+            
+            Teams at UCL and Leiden Observatory are working with international collaborators to extend and improve UCLCHEM. Check our their [blog](https://uclchem.github.io/blog/index.html) for recent updates.
             
         """
 
@@ -152,7 +155,7 @@ def main():
     
     global param_dict
     
-    st.header("UCLCHEM")
+    st.header("UCLCHEM v3.2.0")
     st.write("A Gas-grain Chemical Code for Clouds, Cores, and C-Shocks")
     st.divider()
     
