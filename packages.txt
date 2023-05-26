@@ -2,4 +2,3 @@ libxrender1
 build-essential
 make
 gfortran
-texlive-full
