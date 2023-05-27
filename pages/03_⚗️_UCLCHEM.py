@@ -1,18 +1,19 @@
 import streamlit as st
-from UCLCHEM.src import uclchem
+# from UCLCHEM.src import uclchem
 from pathlib import Path as pt
+import requests
 # import re
 from pages.UCLCHEM.parameters import (
     get_parameters, get_behavioural_parameters, 
-    get_input_output_parameters, get_integration_controls
+    get_integration_controls
 )
 
-from time import perf_counter
+# from time import perf_counter
 import pandas as pd
+
 pd.options.plotting.backend = "plotly"
-
-# import plotly.express as px
-
+API_URL = 'https://uclchem-nionrtv7fa-ez.a.run.app'
+# API_URL = 'http://localhost:9090'
 st.set_page_config(layout='wide')
 loc = pt("./pages/UCLCHEM/outputs").absolute()
 
@@ -40,6 +41,7 @@ def about_page():
             
         """
 
+
 def set_loc(filename: str):
     if not filename.endswith('.dat'):
         filename = filename + ".dat"
@@ -50,8 +52,24 @@ def set_loc(filename: str):
     return str(loc / filename)
 
 
+# @st.cache_data
+def compute_data(api='api/simple_model'):
+    response = requests.post(f"{API_URL}/{api}", json=param_dict, headers={'Content-Type': 'application/json'})
+    
+    if response.status_code == 200:
+        response_json = response.json()
+        if response_json['status'] > 0:
+            st.success(f'Calculation finished in {response_json["time"]:.2f} seconds')
+            return response_json['results']
+    else:
+        response.raise_for_status()
+        return None
+
+simple_model_results = None
+
 def simple_cloud_model_calc():
-    global param_dict
+    
+    global param_dict, simple_model_results
     
     st.markdown("""
         ## A Simple Cloud
@@ -65,49 +83,28 @@ def simple_cloud_model_calc():
     input_output_parameters = {
         "writeStep": 1,
         # "abundLoadFile": set_loc("abundance"),
-        "abundSaveFile": set_loc("abundSaveFile"),
+        # "abundSaveFile": set_loc("abundSaveFile"),
         # "columnFile": set_loc("columnFile"),
-        "outputFile": set_loc("outputFile"),
+        # "outputFile": set_loc("outputFile"),
     }
     
     param_dict = param_dict | input_output_parameters
+    # param_dict = param_dict
 
-    if not ('outputFile' in param_dict and param_dict['outputFile']):
-        param_dict['outputFile'] = set_loc('outputFile')
-    
-    
+    # results = None
     if st.button('Run calculations'):
-        time_start = perf_counter()
+        # response_get = requests.get(API_URL)
+        # st.markdown(response_get.text)
+        simple_model_results = compute_data(api='api/simple_model')
         
-        status, *_ = uclchem.model.cloud(param_dict=param_dict)
-        if status < 0:
-            return st.error('Error occured during calculation')
-        st.success(f'Finished in {(perf_counter() - time_start):.2f} seconds')
     
-    if not pt(param_dict['outputFile']).exists():
-        return st.warning("After setting appropriate parameters (above); Run calculation to show results")
-    
+    if simple_model_results is None:
+        return
+      
     tab1, tab2 = st.tabs(['Results', 'Elemental conservation'])
-    result_df = uclchem.analysis.read_output_file(param_dict['outputFile'])
     
-    # with st.expander("Check: elemental conservation"):
-    with tab2:
-        st.markdown("""
-            To test whether we conserve elements. Each entry gives the change in the total abundance of an element as a percentage of the original abundance. In an ideal case, these values are 0\% indicating the total abundance at the end of the model is exactly the same as the total at the start.
-            
-            Changes of less than 1\% are fine for many cases but if they are too high, you could consider changing the `reltol` and `abstol` parameters that control the integrator accuracy. They are error tolerance so smaller values lead to smaller errors and (usually) longer integration times. The default values were chosen by running a large grid of models and choosing the tolerances with the lowest average run time from those that conserved elements well and rarely failed. Despite this, there are no one-size-fits-all perfect tolerances and you may run into issues with different networks or models.
-                        
-        """)
-        
-        element_list = st.text_input('Enter elements', value='H, N, C, O, S')
-        element_list_arr = [_.strip() for _ in element_list.split(',')]
-        conservation=uclchem.analysis.check_element_conservation(result_df, element_list=element_list_arr)
-        st.write("Percentage change in total abundances:")
-        st.dataframe(conservation)
-    
-    # with st.expander("Plotting result", expanded=True):
     with tab1:
-        
+        result_df = pd.read_json(simple_model_results['full_output'])
         st.download_button(
             label="Download data as CSV",
             data=result_df.to_csv(),
@@ -121,11 +118,6 @@ def simple_cloud_model_calc():
         
         species = st.text_input('Enter species', value='H, H2, $H, $H2, H2O, $H2O, CO, $CO, $CH3OH, CH3OH')
         species_list = [_.strip() for _ in species.split(',')]
-        
-        # col1, col2 = st.columns(2)
-        
-        # xlim = col1.text_input('xlim', value='1e3, 1e6')
-        # ylim = col2.text_input('ylim', value='1e-15, 1')
         
         abundances_dict = {}
         for specName in species_list:
@@ -142,14 +134,25 @@ def simple_cloud_model_calc():
             title="Time (Year) vs Abundances", 
             log_y=True,
             labels=dict(index="Time / years", value="X<sub>{Species}</sub>", variable="Species"),
-            # range_x=[float(_) for _ in xlim.split(',')], range_y=[float(_) for _ in ylim.split(',')]
         )
         st.plotly_chart(fig, use_container_width=True)
-
+    
+    with tab2:
+        st.markdown("""
+            To test whether we conserve elements. Each entry gives the change in the total abundance of an element as a percentage of the original abundance. In an ideal case, these values are 0\% indicating the total abundance at the end of the model is exactly the same as the total at the start.
+            
+            Changes of less than 1\% are fine for many cases but if they are too high, you could consider changing the `reltol` and `abstol` parameters that control the integrator accuracy. They are error tolerance so smaller values lead to smaller errors and (usually) longer integration times. The default values were chosen by running a large grid of models and choosing the tolerances with the lowest average run time from those that conserved elements well and rarely failed. Despite this, there are no one-size-fits-all perfect tolerances and you may run into issues with different networks or models.
+                        
+        """)
+        
+        conservation = simple_model_results['conservation']
+        st.write("Percentage change in total abundances:")
+        st.dataframe(conservation)
+    
+    
 param_dict = {}
 outSpecies: str = None
-# file_saved = False
-# status = -1
+
 
 def main():
     
@@ -158,25 +161,16 @@ def main():
     st.header("UCLCHEM v3.2.0")
     st.write("A Gas-grain Chemical Code for Clouds, Cores, and C-Shocks")
     st.divider()
-    
     st.subheader("Fine-tuning the model")
     
     with st.expander("Parameters", expanded=True):
         parameters = get_parameters()
     with st.expander("Behavioural parameters"):
         behaviour_parameters = get_behavioural_parameters()
-    # with st.expander("Input and Output parameters"):
-    #     input_output_parameters = get_input_output_parameters()
-        
-    #     input_output_parameters_filtered = {
-    #         key: set_loc(value)
-    #         for key, value in input_output_parameters.items() if key != 'writeStep' and value
-    #     }
-    #     input_output_parameters_filtered['writeStep'] = input_output_parameters['writeStep']
-        
-        
+    
     with st.expander("Integration Controls"):
         integration_controls = get_integration_controls()
+        
     param_dict = parameters | behaviour_parameters | integration_controls
     st.divider()
     
@@ -184,8 +178,8 @@ def main():
     
     with tab1:
         simple_cloud_model_calc()
-        
-        
+    
+    
 if __name__ == "__main__":
     
     main()
