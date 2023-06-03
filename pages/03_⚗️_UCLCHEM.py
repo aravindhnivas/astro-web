@@ -42,16 +42,6 @@ def about_page():
         """
 
 
-def set_loc(filename: str):
-    if not filename.endswith('.dat'):
-        filename = filename + ".dat"
-    
-    if not loc.exists(): 
-        loc.mkdir()
-        
-    return str(loc / filename)
-
-
 def compute_data(api='api/simple_model'):
     # URL = st.secrets['UCLCHEM_API_URL']
     URL = "http://localhost:9090"
@@ -81,17 +71,12 @@ def simple_cloud_model_calc():
     """)
     
     input_output_parameters = {
-        "writeStep": 1,
-        # "abundLoadFile": set_loc("abundance"),
-        # "abundSaveFile": set_loc("abundSaveFile"),
-        # "columnFile": set_loc("columnFile"),
-        # "outputFile": set_loc("outputFile"),
+        "writeStep": 1
     }
     
     param_dict = param_dict | input_output_parameters
     if st.button('Run calculations'):
         results = compute_data(api='api/simple_model')
-    
         with open(loc / "simple_model_results.json", "w") as f:
             json.dump(results, f)
     
