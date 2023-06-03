@@ -1,10 +1,10 @@
 import streamlit as st
-from pathlib import Path as pt
+# from pathlib import Path as pt
 
 def get_parameters():
     
     # parameters
-    st.markdown("### Parameters")
+    # st.markdown("### Parameters")
     
     col1, col2, col3, col4 = st.columns(4)
     
@@ -41,7 +41,7 @@ def get_parameters():
 def get_behavioural_parameters():
     
     # parameters
-    st.markdown("### Behavioural Controls")
+    # st.markdown("### Behavioural Controls")
     
     col1, col2, col3 = st.columns(3)
     
@@ -113,7 +113,7 @@ def get_input_output_parameters():
 
 def get_integration_controls():
     
-    st.markdown("### Integration Controls")
+    # st.markdown("### Integration Controls")
     
     col1, col2, col3, col4 = st.columns(4)
     

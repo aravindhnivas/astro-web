@@ -1,3 +1,5 @@
+import json
+import numpy as np
 import streamlit as st
 # from UCLCHEM.src import uclchem
 from pathlib import Path as pt
@@ -12,8 +14,6 @@ from pages.UCLCHEM.parameters import (
 import pandas as pd
 
 pd.options.plotting.backend = "plotly"
-API_URL = 'https://uclchem-nionrtv7fa-ez.a.run.app'
-# API_URL = 'http://localhost:9090'
 st.set_page_config(layout='wide')
 loc = pt("./pages/UCLCHEM/outputs").absolute()
 
@@ -52,9 +52,10 @@ def set_loc(filename: str):
     return str(loc / filename)
 
 
-# @st.cache_data
 def compute_data(api='api/simple_model'):
-    response = requests.post(f"{API_URL}/{api}", json=param_dict, headers={'Content-Type': 'application/json'})
+    # URL = st.secrets['UCLCHEM_API_URL']
+    URL = "http://localhost:9090"
+    response = requests.post(f'{URL}/{api}', json=param_dict, headers={'Content-Type': 'application/json'})
     
     if response.status_code == 200:
         response_json = response.json()
@@ -92,12 +93,28 @@ def simple_cloud_model_calc():
     # param_dict = param_dict
 
     # results = None
-    if st.button('Run calculations'):
-        # response_get = requests.get(API_URL)
-        # st.markdown(response_get.text)
-        simple_model_results = compute_data(api='api/simple_model')
-        
     
+    # st.markdown("""
+    #         ### Species
+    #         Note the use of $ symbols in the species list below, this gets the total ice abundance of a species. For two phase models, this is just the surface abudance but for three phase it is the sum of surface and bulk.
+    #     """)
+    
+    # species = st.text_input('Enter species', value='H, H2, $H, $H2, H2O, $H2O, CO, $CO, $CH3OH, CH3OH')
+    # species_list = [_.strip() for _ in species.split(',')]
+    
+    if st.button('Run calculations'):
+        results = compute_data(api='api/simple_model')
+    
+        with open("./pages/UCLCHEM/outputs/simple_model_results.json", "w") as f:
+            json.dump(results, f)
+    
+    saved_file = pt("./pages/UCLCHEM/outputs/simple_model_results.json")
+    if not saved_file.exists():
+        return
+    
+    with open(saved_file, "r") as f:
+        simple_model_results = json.load(f)
+            
     if simple_model_results is None:
         return
       
@@ -113,12 +130,13 @@ def simple_cloud_model_calc():
         )
         
         st.markdown("""
+            ### Species
             Note the use of $ symbols in the species list below, this gets the total ice abundance of a species. For two phase models, this is just the surface abudance but for three phase it is the sum of surface and bulk.
         """)
-        
+    
         species = st.text_input('Enter species', value='H, H2, $H, $H2, H2O, $H2O, CO, $CO, $CH3OH, CH3OH')
         species_list = [_.strip() for _ in species.split(',')]
-        
+    
         abundances_dict = {}
         for specName in species_list:
             if specName[0] == "$":
