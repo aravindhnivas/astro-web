@@ -43,8 +43,8 @@ def about_page():
 
 
 def compute_data(api='api/simple_model'):
-    # URL = st.secrets['UCLCHEM_API_URL']
-    URL = "http://localhost:9090"
+    URL = st.secrets['UCLCHEM_API_URL']
+    # URL = "http://localhost:9090"
     response = requests.post(f'{URL}/{api}', json=param_dict, headers={'Content-Type': 'application/json'})
     
     if response.status_code == 200:
