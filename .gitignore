@@ -1,4 +1,5 @@
 **/__pycache__/
 *.dat
 .streamlit/secrets.toml
-pages/UCLCHEM/outputs/
+# pages/UCLCHEM/outputs/
+outputs/**.json

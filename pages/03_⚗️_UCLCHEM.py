@@ -15,8 +15,8 @@ import pandas as pd
 
 pd.options.plotting.backend = "plotly"
 st.set_page_config(layout='wide')
-loc = pt("./pages/UCLCHEM/outputs").absolute()
-
+loc = pt("./outputs")
+if not loc.exists(): loc.mkdir()
 
 def about_page():
     st.divider()
@@ -53,8 +53,8 @@ def set_loc(filename: str):
 
 
 def compute_data(api='api/simple_model'):
-    URL = st.secrets['UCLCHEM_API_URL']
-    # URL = "http://localhost:9090"
+    # URL = st.secrets['UCLCHEM_API_URL']
+    URL = "http://localhost:9090"
     response = requests.post(f'{URL}/{api}', json=param_dict, headers={'Content-Type': 'application/json'})
     
     if response.status_code == 200:
@@ -66,11 +66,10 @@ def compute_data(api='api/simple_model'):
         response.raise_for_status()
         return None
 
-simple_model_results = None
 
 def simple_cloud_model_calc():
     
-    global param_dict, simple_model_results
+    global param_dict
     
     st.markdown("""
         ## A Simple Cloud
@@ -90,25 +89,13 @@ def simple_cloud_model_calc():
     }
     
     param_dict = param_dict | input_output_parameters
-    # param_dict = param_dict
-
-    # results = None
-    
-    # st.markdown("""
-    #         ### Species
-    #         Note the use of $ symbols in the species list below, this gets the total ice abundance of a species. For two phase models, this is just the surface abudance but for three phase it is the sum of surface and bulk.
-    #     """)
-    
-    # species = st.text_input('Enter species', value='H, H2, $H, $H2, H2O, $H2O, CO, $CO, $CH3OH, CH3OH')
-    # species_list = [_.strip() for _ in species.split(',')]
-    
     if st.button('Run calculations'):
         results = compute_data(api='api/simple_model')
     
-        with open("./pages/UCLCHEM/outputs/simple_model_results.json", "w") as f:
+        with open(loc / "simple_model_results.json", "w") as f:
             json.dump(results, f)
     
-    saved_file = pt("./pages/UCLCHEM/outputs/simple_model_results.json")
+    saved_file = loc / "simple_model_results.json"
     if not saved_file.exists():
         return
     
