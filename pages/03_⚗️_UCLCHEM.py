@@ -1,5 +1,5 @@
-import json
-import numpy as np
+# import json
+# import numpy as np
 import streamlit as st
 # from UCLCHEM.src import uclchem
 from pathlib import Path as pt
@@ -75,17 +75,20 @@ def simple_cloud_model_calc():
     }
     
     param_dict = param_dict | input_output_parameters
+    
+    st.markdown("""
+            ### Species
+            Note the use of $ symbols in the species list below, this gets the total ice abundance of a species. For two phase models, this is just the surface abudance but for three phase it is the sum of surface and bulk.
+        """)
+    
+    species = st.text_input('Enter species', value='H, H2, $H, $H2, H2O, $H2O, CO, $CO, $CH3OH, CH3OH')
+    species_list = [_.strip() for _ in species.split(',')]
+    
     if st.button('Run calculations'):
-        results = compute_data(api='api/simple_model')
-        with open(loc / "simple_model_results.json", "w") as f:
-            json.dump(results, f)
-    
-    saved_file = loc / "simple_model_results.json"
-    if not saved_file.exists():
-        return
-    
-    with open(saved_file, "r") as f:
-        simple_model_results = json.load(f)
+        simple_model_results = compute_data(api='api/simple_model')
+        simple_model_results_page(simple_model_results, species_list)
+
+def simple_model_results_page(simple_model_results: dict = None, species_list: str = None):
             
     if simple_model_results is None:
         return
@@ -101,14 +104,6 @@ def simple_cloud_model_calc():
             mime='text/csv',
         )
         
-        st.markdown("""
-            ### Species
-            Note the use of $ symbols in the species list below, this gets the total ice abundance of a species. For two phase models, this is just the surface abudance but for three phase it is the sum of surface and bulk.
-        """)
-    
-        species = st.text_input('Enter species', value='H, H2, $H, $H2, H2O, $H2O, CO, $CO, $CH3OH, CH3OH')
-        species_list = [_.strip() for _ in species.split(',')]
-    
         abundances_dict = {}
         for specName in species_list:
             if specName[0] == "$":
@@ -168,7 +163,7 @@ def main():
     
     with tab1:
         simple_cloud_model_calc()
-    
+        # simple_model_results_page()
     
 if __name__ == "__main__":
     
