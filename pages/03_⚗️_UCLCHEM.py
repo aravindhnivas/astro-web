@@ -1,24 +1,20 @@
-# import json
-# import numpy as np
+import sys
 import streamlit as st
-# from UCLCHEM.src import uclchem
-# from pathlib import Path as pt
 import requests
-# import re
 from pages.UCLCHEM.parameters import (
     get_parameters, get_behavioural_parameters, 
     get_integration_controls
 )
-
-# from time import perf_counter
 import pandas as pd
 
 pd.options.plotting.backend = "plotly"
-# st.set_page_config(layout='wide')
-# loc = pt("./outputs")
-# if not loc.exists(): loc.mkdir()
-
+if len(sys.argv) > 1:
+    devMode = sys.argv[1] == 'dev'
+else:
+    devMode = False
+    
 def about_page():
+    
     st.divider()
     
     with st.sidebar:
@@ -43,8 +39,12 @@ def about_page():
 
 
 def compute_data(api='api/simple_model'):
-    URL = st.secrets['UCLCHEM_API_URL']
-    # URL = "http://localhost:9090"
+    print(f"Running API in {'development' if devMode else 'production'} mode")
+    if devMode:
+        URL = "http://localhost:9090"
+    else:
+        URL = st.secrets['UCLCHEM_API_URL']
+        
     response = requests.post(f'{URL}/{api}', json=param_dict, headers={'Content-Type': 'application/json'})
     
     if response.status_code == 200:
@@ -76,7 +76,7 @@ def simple_cloud_model_calc():
     
     param_dict = param_dict | input_output_parameters
     if st.button('Run calculations'):
-        st.session_state.simple_model_results = compute_data(api='api/simple_model')
+        st.session_state['simple_model_results'] = compute_data(api='api/simple_model')
     
     simple_model_results_page()
         
@@ -84,11 +84,11 @@ def simple_cloud_model_calc():
 def simple_model_results_page():
             
     if 'simple_model_results' not in st.session_state:
-        st.session_state.simple_model_results = None
-        return st.warning('No results to display')
+        st.session_state['simple_model_results'] = None
+        return
     
-    result = st.session_state.simple_model_results
-      
+    result = st.session_state['simple_model_results']
+    if not result: return st.warning('No results to display')
     tab1, tab2 = st.tabs(['Results', 'Elemental conservation'])
     
     with tab1:
