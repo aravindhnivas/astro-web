@@ -2,7 +2,7 @@
 # import numpy as np
 import streamlit as st
 # from UCLCHEM.src import uclchem
-from pathlib import Path as pt
+# from pathlib import Path as pt
 import requests
 # import re
 from pages.UCLCHEM.parameters import (
@@ -14,9 +14,9 @@ from pages.UCLCHEM.parameters import (
 import pandas as pd
 
 pd.options.plotting.backend = "plotly"
-st.set_page_config(layout='wide')
-loc = pt("./outputs")
-if not loc.exists(): loc.mkdir()
+# st.set_page_config(layout='wide')
+# loc = pt("./outputs")
+# if not loc.exists(): loc.mkdir()
 
 def about_page():
     st.divider()
@@ -75,28 +75,24 @@ def simple_cloud_model_calc():
     }
     
     param_dict = param_dict | input_output_parameters
-    
-    st.markdown("""
-            ### Species
-            Note the use of $ symbols in the species list below, this gets the total ice abundance of a species. For two phase models, this is just the surface abudance but for three phase it is the sum of surface and bulk.
-        """)
-    
-    species = st.text_input('Enter species', value='H, H2, $H, $H2, H2O, $H2O, CO, $CO, $CH3OH, CH3OH')
-    species_list = [_.strip() for _ in species.split(',')]
-    
     if st.button('Run calculations'):
-        simple_model_results = compute_data(api='api/simple_model')
-        simple_model_results_page(simple_model_results, species_list)
+        st.session_state.simple_model_results = compute_data(api='api/simple_model')
+    
+    simple_model_results_page()
+        
 
-def simple_model_results_page(simple_model_results: dict = None, species_list: str = None):
+def simple_model_results_page():
             
-    if simple_model_results is None:
-        return
+    if 'simple_model_results' not in st.session_state:
+        st.session_state.simple_model_results = None
+        return st.warning('No results to display')
+    
+    result = st.session_state.simple_model_results
       
     tab1, tab2 = st.tabs(['Results', 'Elemental conservation'])
     
     with tab1:
-        result_df = pd.read_json(simple_model_results['full_output'])
+        result_df = pd.read_json(result['full_output'])
         st.download_button(
             label="Download data as CSV",
             data=result_df.to_csv(),
@@ -104,6 +100,14 @@ def simple_model_results_page(simple_model_results: dict = None, species_list: s
             mime='text/csv',
         )
         
+        st.markdown("""
+            ### Species
+            Note the use of $ symbols in the species list below, this gets the total ice abundance of a species. For two phase models, this is just the surface abudance but for three phase it is the sum of surface and bulk.
+        """)
+    
+        species = st.text_input('Enter species', value='H, H2, $H, $H2, H2O, $H2O, CO, $CO, $CH3OH, CH3OH')
+        species_list = [_.strip() for _ in species.split(',')]
+          
         abundances_dict = {}
         for specName in species_list:
             if specName[0] == "$":
@@ -130,7 +134,7 @@ def simple_model_results_page(simple_model_results: dict = None, species_list: s
                         
         """)
         
-        conservation = simple_model_results['conservation']
+        conservation = result['conservation']
         st.write("Percentage change in total abundances:")
         st.dataframe(conservation)
     
@@ -160,10 +164,8 @@ def main():
     st.divider()
     
     tab1, = st.tabs(['Simple cloud model'])
-    
     with tab1:
         simple_cloud_model_calc()
-        # simple_model_results_page()
     
 if __name__ == "__main__":
     
