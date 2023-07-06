@@ -26,8 +26,5 @@ joblib
 git+https://github.com/laserkelvin/mol2vec.git@850d944d5f48a58e26ed0264332b5741f72555aa#egg=mol2vec
 
 # astromol
-git+https://github.com/bmcguir2/astromol.git@main
-
-# UCLCHEM
-# pyyaml
-# -e UCLCHEM
+# git+https://github.com/aravindhnivas/astromol.git@v2021.7.0
+astromol==2021.7.0
