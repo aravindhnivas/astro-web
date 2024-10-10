@@ -8,10 +8,11 @@ with st.sidebar:
     """
         ## About myself
         
-        I am Aravindh Nivas Marimuthu(call me Aravindh), a PhD student 👨‍🎓 at the Radboud University, Nijmegen, the Netherlands.
-        I am a experimental spectroscopist of cold molecular ions ❄️ that are relevant to interstellar medium (ISM).
+        I am Aravindh Nivas Marimuthu(call me Aravindh), a postgraduate researcher at Massachusetts Institue of Technology (MIT), USA. 
         
-        I am interested in astrochemistry 🚀 and machine learning 🤖.
+        I am interested in astrochemistry 🚀 and machine learning 🤖. And I develop software tools and interfaces for chemistry and astrochemistry research especially data analysis.
+        
+        I am a experimental spectroscopist of cold molecular ions ❄️ that are relevant to interstellar medium (ISM).
         
         Check out the About section in sidebar on each page(s) for more information on the selected project.
         
