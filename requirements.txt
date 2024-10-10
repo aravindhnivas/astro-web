@@ -1,8 +1,8 @@
 # plotting libraries
 plotly
 bokeh
-matplotlib
-seaborn
+# matplotlib
+# seaborn
 
 # scientific data analysis
 numpy

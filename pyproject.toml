@@ -1,0 +1,44 @@
+[project]
+name = "astro-web"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "Aravindh Nivas Marimuthu", email = "aravindhnivas28@gmail.com" },
+]
+dependencies = [
+    "plotly>=5.24.1",
+    "watchdog>=5.0.3",
+    "astromol @ git+https://github.com/aravindhnivas/astromol.git@main",
+    "streamlit>=1.39.0",
+    # "bokeh>=3.6.0",
+    # "numpy>=1.16.0",
+    # "pandas>=2.2.3",
+    # "scikit-learn>=1.5.2",
+    # "networkx>=3.3",
+    # "loguru>=0.7.2",
+    # "numba>=0.60.0",
+    # "dask>=2024.9.1",
+    # "dask-ml>=2024.4.4",
+    # "joblib>=1.4.2",
+    # "h5py>=3.12.1",
+    # "mol2vec @ git+https://github.com/aravindhnivas/mol2vec.git@gensim_v4",
+    # "astrochem_embedding @ git+https://github.com/aravindhnivas/astrochem_embedding.git@main",
+    # "rdkit>=2024.3.5",
+    # 'gensim @ git+https://github.com/aravindhnivas/gensim.git@develop',
+]
+readme = "README.md"
+requires-python = ">=3.12"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/astro_web"]
